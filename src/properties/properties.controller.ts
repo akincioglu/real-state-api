@@ -6,10 +6,14 @@ import {
   Patch,
   Delete,
   Body,
+  UseGuards,
 } from '@nestjs/common';
 import { PropertiesService } from './properties.service';
 import { Property } from './property.entity';
 import { CreatePropertyDto } from './dto/create-property.dto';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { RolesGuard } from '../auth/roles.guard';
+import { Roles } from '../auth/roles.decorator';
 import { ApiTags, ApiResponse } from '@nestjs/swagger';
 
 @ApiTags('properties')
@@ -18,13 +22,15 @@ export class PropertiesController {
   constructor(private readonly propertiesService: PropertiesService) {}
 
   @Post()
-  async create(
-    @Body() createPropertyDto: CreatePropertyDto,
-  ): Promise<Property> {
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('admin')
+  async create(@Body() createPropertyDto: CreatePropertyDto) {
     return this.propertiesService.create(createPropertyDto);
   }
 
   @Get()
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('admin')
   @ApiResponse({ status: 200, description: 'Success' })
   async findAll(): Promise<Property[]> {
     return this.propertiesService.findAll();

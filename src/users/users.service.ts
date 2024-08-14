@@ -1,8 +1,9 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from './user.entity';
-import { CreateUserDto } from './dto/create-user.dto';
+import { CreateUserDto } from '../users/dto/create-user.dto';
+import { AuthCredentialsDto } from '../auth/dto/auth-credentials.dto';
 
 @Injectable()
 export class UsersService {
@@ -34,5 +35,21 @@ export class UsersService {
 
   async remove(id: number): Promise<void> {
     await this.usersRepository.delete(id);
+  }
+
+  async findByEmail(email: string): Promise<User | undefined> {
+    return this.usersRepository.findOne({ where: { email } });
+  }
+
+  async findById(id: number): Promise<User | undefined> {
+    return this.usersRepository.findOne({ where: { id } });
+  }
+
+  async validateUser(authCredentialsDto: AuthCredentialsDto): Promise<User> {
+    const user = await this.findByEmail(authCredentialsDto.email);
+    if (user && user.password === authCredentialsDto.password) {
+      return user;
+    }
+    throw new UnauthorizedException('Invalid credentials');
   }
 }

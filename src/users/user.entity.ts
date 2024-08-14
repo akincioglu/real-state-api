@@ -14,6 +14,9 @@ export class User {
   @Column()
   phone: string;
 
+  @Column({ nullable: true })
+  username?: string;
+
   @Column()
-  role: string;
+  role: 'admin' | 'agency';
 }

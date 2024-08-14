@@ -18,13 +18,14 @@ async function bootstrap() {
     .setTitle('Real Estate API')
     .setDescription('Real estate management API description')
     .setVersion('1.0')
+    .addBearerAuth()
     .addTag('properties')
     .addTag('users')
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);
-
+  app.useLogger(['error', 'warn', 'log', 'debug', 'verbose']);
   await app.listen(3000);
 }
 bootstrap();
