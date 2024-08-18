@@ -18,9 +18,19 @@ async function bootstrap() {
     .setTitle('Real Estate API')
     .setDescription('Real estate management API description')
     .setVersion('1.0')
-    .addBearerAuth()
     .addTag('properties')
     .addTag('users')
+    .addBearerAuth(
+      {
+        type: 'http',
+        scheme: 'bearer',
+        bearerFormat: 'JWT',
+        name: 'JWT',
+        description: 'Enter JWT token',
+        in: 'header',
+      },
+      'JWT-auth',
+    )
     .build();
 
   const document = SwaggerModule.createDocument(app, config);

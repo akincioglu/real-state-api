@@ -14,7 +14,7 @@ import { CreatePropertyDto } from './dto/create-property.dto';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { RolesGuard } from '../auth/roles.guard';
 import { Roles } from '../auth/roles.decorator';
-import { ApiTags, ApiResponse } from '@nestjs/swagger';
+import { ApiTags, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
 
 @ApiTags('properties')
 @Controller('properties')
@@ -31,6 +31,7 @@ export class PropertiesController {
   @Get()
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('admin')
+  @ApiBearerAuth('JWT-auth')
   @ApiResponse({ status: 200, description: 'Success' })
   async findAll(): Promise<Property[]> {
     return this.propertiesService.findAll();
